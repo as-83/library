@@ -1,11 +1,11 @@
 insert into main.authors(id, authorName)
-values (1,  'A. Dumas'),
-      (2,  'Д.И. Крылов')
+values (1, 'A. Dumas'),
+       (2, 'Д.И. Крылов')
 ;
 
 insert into main.genres(id, genreTitle)
-values (1,  'Роман'),
-       (2,  'Басня')
+values (1, 'Роман'),
+       (2, 'Басня')
 ;
 
 insert into main.books(id, author, title, genre)
