@@ -9,26 +9,26 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("v1/api")
+@RequestMapping("v1/api/books")
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping("books")
+    @GetMapping
     public List<Book> getAllBooks(@RequestParam(required = false) String author, @RequestParam(required = false) String genre) {
         return bookService.getBooksByAuthorAndGenre(author, genre);
     }
 
-    @PostMapping("books")
+    @PostMapping
     public Book addBook(@RequestBody Book book) {
         return bookService.addBook(book);
     }
 
-    @PutMapping("books")
+    @PutMapping
     public void updateBook(@RequestBody Book book) {
         bookService.updateBook(book);
     }
 
-    @DeleteMapping("books/{id}")
+    @DeleteMapping("{id}")
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
     }

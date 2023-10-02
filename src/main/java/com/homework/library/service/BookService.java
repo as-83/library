@@ -35,7 +35,6 @@ public class BookService {
 
     public void updateBook(Book book) {
         Long authorId = getAuthorIdOrCreateNewAuthor(book);
-
         Long genreId = getGenreIdOrCreateNew(book);
         bookMapper.updateBook(book, authorId, genreId);
     }
@@ -44,35 +43,22 @@ public class BookService {
         bookMapper.deleteBook(id);
     }
 
+
     public List<Book> getBooksByAuthorAndGenre(String authorName, String genreTitle) {
         log.info("Getting books By author: {} and Genre: {}", authorName, genreTitle);
-        if (isBlank(authorName) && isBlank(genreTitle)) {
-            return bookMapper.findAllBooks();
-        }
-        if (isBlank(authorName)) {
-            return getBooksByGenre(genreTitle);
-        }
-
-        if (isBlank(genreTitle)) {
-            return getBooksByAuthor(authorName);
+        Long authorId = null;
+        Long genreId = null;
+        if (!isBlank(authorName)) {
+            authorId = getAuthorIdOrThrow(authorName);
         }
 
-        Long authorId = getAuthorIdOrThrow(authorName);
-        Long genreId = getGenreIdThrow(genreTitle);
-        return bookMapper.getBooksByAuthorAndGenre(authorId, genreId);
+        if (!isBlank(genreTitle)) {
+            genreId = getGenreIdOrThrow(genreTitle);
+        }
+        return bookMapper.getBooksByAuthorAndGenreDynamic(authorId, genreId);
     }
 
-    private List<Book> getBooksByGenre(String genreTitle) {
-        Long genreId = getGenreIdThrow(genreTitle);
-        return bookMapper.getBooksByGenreId(genreId);
-    }
-
-    private List<Book> getBooksByAuthor(String authorName) {
-        Long authorId = getAuthorIdOrThrow(authorName);
-        return bookMapper.getBooksByAuthorName(authorId);
-    }
-
-    private Long getGenreIdThrow(String genreTitle) {
+    private Long getGenreIdOrThrow(String genreTitle) {
         Long genreId = genreMapper.getGenreIdByTitle(genreTitle);
         if (isNull(genreId)) {
             throw new ParamNotExistsException("Genre with this title doesnt exist: " + genreTitle);
@@ -91,8 +77,9 @@ public class BookService {
     private Long getGenreIdOrCreateNew(Book book) {
         Long genreId = genreMapper.getGenreIdByTitle(book.getGenre());
         if (isNull(genreId)) {
-            genreMapper.addGenre(new Genre(null, book.getGenre()));
-            genreId = genreMapper.getGenreIdByTitle(book.getGenre());
+            Genre genre = new Genre(null, book.getGenre());
+            genreMapper.addGenre(genre);
+            genreId = genre.getId();
         }
         return genreId;
     }
@@ -100,8 +87,9 @@ public class BookService {
     private Long getAuthorIdOrCreateNewAuthor(Book book) {
         Long authorId = authorMapper.getAuthorIdByName(book.getAuthor());
         if (isNull(authorId)) {
-            authorMapper.addAuthor(new Author(null, book.getAuthor()));
-            authorId = authorMapper.getAuthorIdByName(book.getAuthor());
+            Author author = new Author(null, book.getAuthor());
+            authorMapper.addAuthor(author);
+            authorId = author.getId();
         }
         return authorId;
     }

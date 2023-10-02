@@ -8,25 +8,21 @@ import java.util.List;
 @Mapper
 public interface BookMapper {
 
-    @Select("select b.id, a.authorName, b.title, g.genreTitle " +
-            "from main.books as b " +
-            "left join main.authors as a on b.author = a.id " +
-            "left join main.genres as g on b.genre = g.id")
-    List<Book> findAllBooks();
-
     @Insert("insert into main.books(id, author,title, genre) values(#{id},#{authorId},#{book.title},#{genreId})")
     @SelectKey(statement = "select next value for main.books_sequence", keyProperty = "id",
             before = true, resultType = Long.class)
     void insert(Book book, Long authorId, Long genreId);
 
     @Select(
-            "select b.id, a.authorName, b.title, g.genreTitle " +
+            "<script>select b.id, a.authorName, b.title, g.genreTitle " +
                     "from main.books as b " +
                     "left join main.authors as a on b.author = a.id " +
                     "left join main.genres as g on b.genre = g.id" +
-                    " where b.author=#{authorId} and b.genre=#{genreId}"
+                    " where 1=1  <if test=\"authorId !=null \"> " +
+                    "and b.author=#{authorId}</if> <if test=\"genreId !=null \"> " +
+                    "and b.genre=#{genreId}</if></script>"
     )
-    List<Book> getBooksByAuthorAndGenre(Long authorId, Long genreId);
+    List<Book> getBooksByAuthorAndGenreDynamic(Long authorId, Long genreId);
 
     @Select(
             "select b.id, a.authorName, b.title, g.genreTitle " +

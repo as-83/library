@@ -1,6 +1,7 @@
 package com.homework.library.controller;
 
 import com.homework.library.entity.Author;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,19 +18,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(hierarchyMode = DirtiesContext.HierarchyMode.EXHAUSTIVE)
+@DirtiesContext(hierarchyMode = DirtiesContext.HierarchyMode.CURRENT_LEVEL)
 class AuthorControllerTest {
     private static final String HOST = "http://localhost:";
     private static final String PATH = "/v1/api/author";
+    private String url;
     @Value(value = "${local.server.port}")
     private int port;
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @BeforeEach
+    void setup() {
+        url = HOST + port + PATH;
+    }
+
 
     @Test
     public void shouldReturnAllAuthors_whenFindAllAuthors() {
-        String url = HOST + port + PATH;
         ResponseEntity<Author[]> responseEntity = this.restTemplate.getForEntity(url, Author[].class);
 
         assertEquals(2, Objects.requireNonNull(responseEntity.getBody()).length);
@@ -37,7 +43,6 @@ class AuthorControllerTest {
 
     @Test
     public void shouldAddNewAuthor_whenAddAuthor() {
-        String url = HOST + port + PATH;
         ResponseEntity<Author[]> responseEntity = this.restTemplate.getForEntity(url, Author[].class);
         assertEquals(2, Objects.requireNonNull(responseEntity.getBody()).length);
         String authorName = "J. Date";
@@ -54,7 +59,6 @@ class AuthorControllerTest {
 
     @Test
     public void shouldUpdateAuthor_whenUpdateAuthor() {
-        String url = HOST + port + PATH;
         ResponseEntity<Author[]> responseEntity = this.restTemplate.getForEntity(url, Author[].class);
         Author author = Objects.requireNonNull(responseEntity.getBody())[0];
         String newAuthorName = "J. Date";
@@ -70,7 +74,6 @@ class AuthorControllerTest {
 
     @Test
     public void shouldDeleteAuthor_whenDeleteAuthor() {
-        String url = HOST + port + PATH;
         String authorName = "J. Date";
         HttpEntity<Author> request = new HttpEntity<>(new Author(null, authorName));
         restTemplate.postForObject(url, request, Void.class);
