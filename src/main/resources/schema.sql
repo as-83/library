@@ -26,12 +26,12 @@ nocycle;
 
 create table if not exists main.authors (
     id int primary key,
-    authorName varchar
+    name varchar
 );
 
 create table if not exists main.genres (
     id int primary key,
-    genreTitle varchar
+    title varchar
 );
 
 create table if not exists main.books (

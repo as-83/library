@@ -29,6 +29,7 @@ class BookControllerTest {
     @Value(value = "${local.server.port}")
     private int port;
     private String url;
+    private List<Book> books;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -45,12 +46,16 @@ class BookControllerTest {
     @BeforeEach
     void setup() {
         url = "http://localhost:" + port + "/v1/api/books";
+        books = List.of(
+                new Book(1L, "Author1", "Title1", "Genre1"),
+                new Book(2L, "Author1", "Title2", "Genre1")
+        );
     }
 
     @Test
-    public void shouldReturnAllBooks_whenGetBooks() {
-        when(bookMapper.getBooksByAuthorAndGenreDynamic(null, null)).thenReturn(List.of(new Book(1L, "", "", ""), new Book(2L, "", "", "")));
-        ResponseEntity<Book[]> responseEntity = this.restTemplate.getForEntity(
+    public void shouldReturnAllBooks_whenGetBooks_noParameters() {
+        when(bookMapper.getBooksByAuthorAndGenreDynamic(null, null)).thenReturn(books);
+        ResponseEntity<Book[]> responseEntity = restTemplate.getForEntity(
                 url,
                 Book[].class
         );
@@ -74,14 +79,14 @@ class BookControllerTest {
                 .toUriString();
         when(authorMapper.getAuthorIdByName(author)).thenReturn(1L);
         when(genreMapper.getGenreIdByTitle(genre)).thenReturn(1L);
-        when(bookMapper.getBooksByAuthorAndGenreDynamic(1L, 1L)).thenReturn(List.of(new Book(1L, "", "", ""), new Book(2L, "", "", "")));
-        ResponseEntity<Book[]> responseEntity = this.restTemplate.getForEntity(
+        when(bookMapper.getBooksByAuthorAndGenreDynamic(1L, 1L)).thenReturn(books);
+        ResponseEntity<Book[]> responseEntity = restTemplate.getForEntity(
                 urlTemplate,
                 Book[].class,
                 params
         );
 
-        assertEquals(2, Objects.requireNonNull(responseEntity.getBody()).length);
+        assertEquals(2, responseEntity.getBody().length);
     }
 
     @Test

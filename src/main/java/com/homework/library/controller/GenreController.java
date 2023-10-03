@@ -30,7 +30,7 @@ public class GenreController {
     }
 
     @DeleteMapping("{id}")
-    public void deleteBook(@PathVariable Long id) {
+    public void deleteGenre(@PathVariable Long id) {
         genreService.deleteGenre(id);
     }
 }

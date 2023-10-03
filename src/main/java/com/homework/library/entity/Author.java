@@ -9,5 +9,5 @@ import lombok.Data;
 public class Author {
     private Long id;
     @NotBlank(message = "Name is mandatory")
-    private String authorName;
+    private String name;
 }

@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(hierarchyMode = DirtiesContext.HierarchyMode.CURRENT_LEVEL)
+@DirtiesContext(hierarchyMode = DirtiesContext.HierarchyMode.EXHAUSTIVE)
 class AuthorControllerTest {
     private static final String HOST = "http://localhost:";
     private static final String PATH = "/v1/api/author";
@@ -36,39 +36,39 @@ class AuthorControllerTest {
 
     @Test
     public void shouldReturnAllAuthors_whenFindAllAuthors() {
-        ResponseEntity<Author[]> responseEntity = this.restTemplate.getForEntity(url, Author[].class);
+        ResponseEntity<Author[]> responseEntity = restTemplate.getForEntity(url, Author[].class);
 
-        assertEquals(2, Objects.requireNonNull(responseEntity.getBody()).length);
+        assertEquals(2, responseEntity.getBody().length);
     }
 
     @Test
     public void shouldAddNewAuthor_whenAddAuthor() {
-        ResponseEntity<Author[]> responseEntity = this.restTemplate.getForEntity(url, Author[].class);
-        assertEquals(2, Objects.requireNonNull(responseEntity.getBody()).length);
+        ResponseEntity<Author[]> responseEntity = restTemplate.getForEntity(url, Author[].class);
+        assertEquals(2, responseEntity.getBody().length);
         String authorName = "J. Date";
         HttpEntity<Author> request = new HttpEntity<>(new Author(null, authorName));
 
         Author createdAuthor = restTemplate.postForObject(url, request, Author.class);
 
-        responseEntity = this.restTemplate.getForEntity(url, Author[].class);
+        responseEntity = restTemplate.getForEntity(url, Author[].class);
         Author[] body = responseEntity.getBody();
-        assertEquals(3, Objects.requireNonNull(body).length);
+        assertEquals(3, body.length);
         assertTrue(Arrays.asList(body).contains(createdAuthor));
         restTemplate.delete(url + "/" + createdAuthor.getId());
     }
 
     @Test
     public void shouldUpdateAuthor_whenUpdateAuthor() {
-        ResponseEntity<Author[]> responseEntity = this.restTemplate.getForEntity(url, Author[].class);
-        Author author = Objects.requireNonNull(responseEntity.getBody())[0];
+        ResponseEntity<Author[]> responseEntity = restTemplate.getForEntity(url, Author[].class);
+        Author author = responseEntity.getBody()[0];
         String newAuthorName = "J. Date";
-        author.setAuthorName(newAuthorName);
+        author.setName(newAuthorName);
         HttpEntity<Author> request = new HttpEntity<>(author);
 
         restTemplate.put(url, request);
 
-        responseEntity = this.restTemplate.getForEntity(url, Author[].class);
-        Author updatedAuthor = Objects.requireNonNull(responseEntity.getBody())[0];
+        responseEntity = restTemplate.getForEntity(url, Author[].class);
+        Author updatedAuthor = responseEntity.getBody()[0];
         assertEquals(author, updatedAuthor);
     }
 
@@ -77,15 +77,15 @@ class AuthorControllerTest {
         String authorName = "J. Date";
         HttpEntity<Author> request = new HttpEntity<>(new Author(null, authorName));
         restTemplate.postForObject(url, request, Void.class);
-        ResponseEntity<Author[]> responseEntity = this.restTemplate.getForEntity(url, Author[].class);
-        Author authorToDelete = Objects.requireNonNull(responseEntity.getBody())[2];
-        assertEquals(3, Objects.requireNonNull(responseEntity.getBody()).length);
+        ResponseEntity<Author[]> responseEntity = restTemplate.getForEntity(url, Author[].class);
+        Author authorToDelete = responseEntity.getBody()[2];
+        assertEquals(3, responseEntity.getBody().length);
 
         restTemplate.delete(url + "/" + authorToDelete.getId());
 
-        responseEntity = this.restTemplate.getForEntity(url, Author[].class);
+        responseEntity = restTemplate.getForEntity(url, Author[].class);
         Author[] body = responseEntity.getBody();
-        assertEquals(2, Objects.requireNonNull(body).length);
+        assertEquals(2, body.length);
         assertTrue(Arrays.stream(body).noneMatch(author -> Objects.equals(authorToDelete.getId(), author.getId())));
     }
 }

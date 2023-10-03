@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(hierarchyMode = DirtiesContext.HierarchyMode.CURRENT_LEVEL)
+@DirtiesContext(hierarchyMode = DirtiesContext.HierarchyMode.EXHAUSTIVE)
 class GenreControllerTest {
     private static final String HOST = "http://localhost:";
     private static final String PATH = "/v1/api/genre";
@@ -38,13 +38,13 @@ class GenreControllerTest {
     public void shouldReturnAllGenres_whenFindAllGenres() {
         ResponseEntity<Genre[]> responseEntity = restTemplate.getForEntity(url, Genre[].class);
 
-        assertEquals(2, Objects.requireNonNull(responseEntity.getBody()).length);
+        assertEquals(2, responseEntity.getBody().length);
     }
 
     @Test
     public void shouldAddNewGenre_whenAddGenre() {
         ResponseEntity<Genre[]> responseEntity = restTemplate.getForEntity(url, Genre[].class);
-        assertEquals(2, Objects.requireNonNull(responseEntity.getBody()).length);
+        assertEquals(2, responseEntity.getBody().length);
         String genreTitle = "Story";
         HttpEntity<Genre> request = new HttpEntity<>(new Genre(null, genreTitle));
 
@@ -52,7 +52,7 @@ class GenreControllerTest {
 
         responseEntity = restTemplate.getForEntity(url, Genre[].class);
         Genre[] body = responseEntity.getBody();
-        assertEquals(3, Objects.requireNonNull(body).length);
+        assertEquals(3, body.length);
         assertTrue(Arrays.asList(body).contains(createdGenre));
         restTemplate.delete(url + "/" + createdGenre.getId());
     }
@@ -60,32 +60,32 @@ class GenreControllerTest {
     @Test
     public void shouldUpdateGenre_whenUpdateGenre() {
         ResponseEntity<Genre[]> responseEntity = restTemplate.getForEntity(url, Genre[].class);
-        Genre genre = Objects.requireNonNull(responseEntity.getBody())[0];
-        String newGenreTitle = "J. Date";
-        genre.setGenreTitle(newGenreTitle);
+        Genre genre = responseEntity.getBody()[0];
+        String newGenreTitle = "Story";
+        genre.setTitle(newGenreTitle);
         HttpEntity<Genre> request = new HttpEntity<>(genre);
 
         restTemplate.put(url, request);
 
         responseEntity = restTemplate.getForEntity(url, Genre[].class);
-        Genre updatedGenre = Objects.requireNonNull(responseEntity.getBody())[0];
+        Genre updatedGenre = responseEntity.getBody()[0];
         assertEquals(genre, updatedGenre);
     }
 
     @Test
     public void shouldDeleteGenre_whenDeleteGenre() {
-        String genreTitle = "J. Date";
+        String genreTitle = "Story";
         HttpEntity<Genre> request = new HttpEntity<>(new Genre(null, genreTitle));
         restTemplate.postForObject(url, request, Void.class);
         ResponseEntity<Genre[]> responseEntity = restTemplate.getForEntity(url, Genre[].class);
-        Genre genreToDelete = Objects.requireNonNull(responseEntity.getBody())[2];
-        assertEquals(3, Objects.requireNonNull(responseEntity.getBody()).length);
+        Genre genreToDelete = responseEntity.getBody()[2];
+        assertEquals(3, responseEntity.getBody().length);
 
         restTemplate.delete(url + "/" + genreToDelete.getId());
 
         responseEntity = restTemplate.getForEntity(url, Genre[].class);
         Genre[] body = responseEntity.getBody();
-        assertEquals(2, Objects.requireNonNull(body).length);
+        assertEquals(2, body.length);
         assertTrue(Arrays.stream(body).noneMatch(genre -> Objects.equals(genreToDelete.getId(), genre.getId())));
     }
 }

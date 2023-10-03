@@ -9,5 +9,5 @@ import lombok.Data;
 public class Genre {
     private Long id;
     @NotBlank(message = "Genre is mandatory")
-    private String genreTitle;
+    private String title;
 }

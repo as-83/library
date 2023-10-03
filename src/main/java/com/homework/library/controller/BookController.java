@@ -21,8 +21,8 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<Book> addBook(@Valid @RequestBody Book book) {
-        return ResponseEntity.ok().body(bookService.addBook(book));
+    public Book addBook(@Valid @RequestBody Book book) {
+        return bookService.addBook(book);
     }
 
     @PutMapping

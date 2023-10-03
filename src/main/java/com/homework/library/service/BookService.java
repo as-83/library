@@ -29,20 +29,23 @@ public class BookService {
     public Book addBook(Book book) {
         Long authorId = getAuthorIdOrCreateNewAuthor(book);
 
-        Long genreId = getGenreIdOrCreateNew(book);
+        Long genreId = getGenreIdOrCreateNewGenre(book);
         bookMapper.insert(book, authorId, genreId);
         log.info("Added new book: {}", book);
         return book;
     }
 
+    @Transactional
     public void updateBook(Book book) {
         Long authorId = getAuthorIdOrCreateNewAuthor(book);
-        Long genreId = getGenreIdOrCreateNew(book);
+        Long genreId = getGenreIdOrCreateNewGenre(book);
         bookMapper.updateBook(book, authorId, genreId);
+        log.info("Updated book: {}", book);
     }
 
     public void deleteBook(Long id) {
         bookMapper.deleteBook(id);
+        log.info("Deleted book with id: {}", id);
     }
 
 
@@ -76,7 +79,7 @@ public class BookService {
         return authorId;
     }
 
-    private Long getGenreIdOrCreateNew(Book book) {
+    private Long getGenreIdOrCreateNewGenre(Book book) {
         Long genreId = genreMapper.getGenreIdByTitle(book.getGenre());
         if (isNull(genreId)) {
             Genre genre = new Genre(null, book.getGenre());
