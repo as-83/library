@@ -8,10 +8,10 @@ import java.util.List;
 @Mapper
 public interface BookMapper {
 
-    @Insert("insert into main.books(id, author,title, genre) values(#{id},#{authorId},#{book.title},#{genreId})")
-    @SelectKey(statement = "select next value for main.books_sequence", keyProperty = "id",
+    @Insert("insert into main.books(id, author,title, genre) values(#{book.id},#{authorId},#{book.title},#{genreId})")
+    @SelectKey(statement = "select next value for main.books_sequence", keyProperty = "book.id",
             before = true, resultType = Long.class)
-    void insert(Book book, Long authorId, Long genreId);
+    void insert(@Param("book") Book book, Long authorId, Long genreId);
 
     @Select(
             "<script>select b.id, a.authorName, b.title, g.genreTitle " +

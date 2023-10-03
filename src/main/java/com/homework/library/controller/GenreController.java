@@ -2,6 +2,7 @@ package com.homework.library.controller;
 
 import com.homework.library.entity.Genre;
 import com.homework.library.service.GenreService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,12 @@ public class GenreController {
     }
 
     @PostMapping
-    public Genre addGenre(@RequestBody Genre genre) {
+    public Genre addGenre(@Valid @RequestBody Genre genre) {
         return genreService.addGenre(genre);
     }
 
     @PutMapping
-    public void updateGenre(@RequestBody Genre genre) {
+    public void updateGenre(@Valid @RequestBody Genre genre) {
         genreService.updateGenre(genre);
     }
 

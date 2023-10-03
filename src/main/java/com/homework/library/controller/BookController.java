@@ -2,7 +2,9 @@ package com.homework.library.controller;
 
 import com.homework.library.entity.Book;
 import com.homework.library.service.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,12 +21,12 @@ public class BookController {
     }
 
     @PostMapping
-    public Book addBook(@RequestBody Book book) {
-        return bookService.addBook(book);
+    public ResponseEntity<Book> addBook(@Valid @RequestBody Book book) {
+        return ResponseEntity.ok().body(bookService.addBook(book));
     }
 
     @PutMapping
-    public void updateBook(@RequestBody Book book) {
+    public void updateBook(@Valid @RequestBody Book book) {
         bookService.updateBook(book);
     }
 

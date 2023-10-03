@@ -2,6 +2,7 @@ package com.homework.library.controller;
 
 import com.homework.library.entity.Author;
 import com.homework.library.service.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,12 @@ public class AuthorController {
     }
 
     @PostMapping
-    public Author addAuthor(@RequestBody Author author) {
+    public Author addAuthor(@Valid @RequestBody Author author) {
         return authorService.addAuthor(author);
     }
 
     @PutMapping
-    public void updateAuthor(@RequestBody Author author) {
+    public void updateAuthor(@Valid @RequestBody Author author) {
         authorService.updateAuthor(author);
     }
 
