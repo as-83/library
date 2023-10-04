@@ -1,4 +1,4 @@
-package exception;
+package com.homework.library.exception;
 
 import lombok.NoArgsConstructor;
 

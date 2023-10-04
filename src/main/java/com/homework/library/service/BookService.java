@@ -6,7 +6,7 @@ import com.homework.library.entity.Genre;
 import com.homework.library.mapper.AuthorMapper;
 import com.homework.library.mapper.BookMapper;
 import com.homework.library.mapper.GenreMapper;
-import exception.ParamNotExistsException;
+import com.homework.library.exception.ParamNotExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class BookService {
     }
 
 
-    public List<Book> getBooksByAuthorAndGenre(String authorName, String genreTitle) {
+    public List<Book> getBooksByAuthorAndGenre(String authorName, String genreTitle, Integer page, Integer limit) {
         log.info("Getting books By author: {} and Genre: {}", authorName, genreTitle);
         Long authorId = null;
         Long genreId = null;
@@ -60,7 +60,7 @@ public class BookService {
         if (!isBlank(genreTitle)) {
             genreId = getGenreIdOrThrow(genreTitle);
         }
-        return bookMapper.getBooksByAuthorAndGenreDynamic(authorId, genreId);
+        return bookMapper.getBooksByAuthorAndGenreDynamic(authorId, genreId, page, limit);
     }
 
     private Long getGenreIdOrThrow(String genreTitle) {

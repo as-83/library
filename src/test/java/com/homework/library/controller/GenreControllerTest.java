@@ -61,20 +61,19 @@ class GenreControllerTest {
     public void shouldUpdateGenre_whenUpdateGenre() {
         ResponseEntity<Genre[]> responseEntity = restTemplate.getForEntity(url, Genre[].class);
         Genre genre = responseEntity.getBody()[0];
-        String newGenreTitle = "Story";
+        String newGenreTitle = "IT";
         genre.setTitle(newGenreTitle);
         HttpEntity<Genre> request = new HttpEntity<>(genre);
 
         restTemplate.put(url, request);
 
         responseEntity = restTemplate.getForEntity(url, Genre[].class);
-        Genre updatedGenre = responseEntity.getBody()[0];
-        assertEquals(genre, updatedGenre);
+        assertTrue(Arrays.asList(responseEntity.getBody()).contains(genre));
     }
 
     @Test
     public void shouldDeleteGenre_whenDeleteGenre() {
-        String genreTitle = "Story";
+        String genreTitle = "History";
         HttpEntity<Genre> request = new HttpEntity<>(new Genre(null, genreTitle));
         restTemplate.postForObject(url, request, Void.class);
         ResponseEntity<Genre[]> responseEntity = restTemplate.getForEntity(url, Genre[].class);

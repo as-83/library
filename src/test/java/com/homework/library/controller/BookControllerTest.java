@@ -18,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -54,7 +53,7 @@ class BookControllerTest {
 
     @Test
     public void shouldReturnAllBooks_whenGetBooks_noParameters() {
-        when(bookMapper.getBooksByAuthorAndGenreDynamic(null, null)).thenReturn(books);
+        when(bookMapper.getBooksByAuthorAndGenreDynamic(null, null, 1, 100)).thenReturn(books);
         ResponseEntity<Book[]> responseEntity = restTemplate.getForEntity(
                 url,
                 Book[].class
@@ -79,7 +78,7 @@ class BookControllerTest {
                 .toUriString();
         when(authorMapper.getAuthorIdByName(author)).thenReturn(1L);
         when(genreMapper.getGenreIdByTitle(genre)).thenReturn(1L);
-        when(bookMapper.getBooksByAuthorAndGenreDynamic(1L, 1L)).thenReturn(books);
+        when(bookMapper.getBooksByAuthorAndGenreDynamic(1L, 1L, 1, 100)).thenReturn(books);
         ResponseEntity<Book[]> responseEntity = restTemplate.getForEntity(
                 urlTemplate,
                 Book[].class,

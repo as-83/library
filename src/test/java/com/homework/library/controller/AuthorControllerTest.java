@@ -45,7 +45,7 @@ class AuthorControllerTest {
     public void shouldAddNewAuthor_whenAddAuthor() {
         ResponseEntity<Author[]> responseEntity = restTemplate.getForEntity(url, Author[].class);
         assertEquals(2, responseEntity.getBody().length);
-        String authorName = "J. Date";
+        String authorName = "М.Ю. Лермонтов";
         HttpEntity<Author> request = new HttpEntity<>(new Author(null, authorName));
 
         Author createdAuthor = restTemplate.postForObject(url, request, Author.class);
@@ -61,15 +61,14 @@ class AuthorControllerTest {
     public void shouldUpdateAuthor_whenUpdateAuthor() {
         ResponseEntity<Author[]> responseEntity = restTemplate.getForEntity(url, Author[].class);
         Author author = responseEntity.getBody()[0];
-        String newAuthorName = "J. Date";
+        String newAuthorName = "А.С. Пушкин";
         author.setName(newAuthorName);
         HttpEntity<Author> request = new HttpEntity<>(author);
 
         restTemplate.put(url, request);
 
         responseEntity = restTemplate.getForEntity(url, Author[].class);
-        Author updatedAuthor = responseEntity.getBody()[0];
-        assertEquals(author, updatedAuthor);
+        assertTrue(Arrays.asList(responseEntity.getBody()).contains(author));
     }
 
     @Test

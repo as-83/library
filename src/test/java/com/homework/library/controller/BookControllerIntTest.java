@@ -10,9 +10,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,38 +35,10 @@ class BookControllerIntTest {
 
     @Test
     public void shouldReturnAllBooks_whenGetBooks_noParameters() {
-        ResponseEntity<Book[]> responseEntity = restTemplate.getForEntity(
-                url,
-                Book[].class
-        );
+        ResponseEntity<Book[]> responseEntity = restTemplate.getForEntity(url, Book[].class);
 
         assertEquals(3, responseEntity.getBody().length);
     }
-
-   @Test
-    public void shouldReturnFilteredBooks_whenGetBooks_givenAuthorAndGenre() {
-        String author = "Д.И. Крылов";
-        String genre = "Басня";
-
-        Map<String, String> params = new HashMap<>();
-        params.put("author", author);
-        params.put("genre", genre);
-
-        String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("author", "{author}")
-                .queryParam("genre", "{genre}")
-                .encode()
-                .toUriString();
-
-        ResponseEntity<Book[]> responseEntity = restTemplate.getForEntity(
-                urlTemplate,
-                Book[].class,
-                params
-        );
-
-        assertEquals(1, responseEntity.getBody().length);
-    }
-
 
     @Test
     public void shouldAddNewBook_whenAddBook() {

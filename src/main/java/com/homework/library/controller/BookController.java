@@ -4,20 +4,24 @@ import com.homework.library.entity.Book;
 import com.homework.library.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("v1/api/books")
+@RequestMapping("/v1/api/books")
 public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    public List<Book> getAllBooks(@RequestParam(required = false) String author, @RequestParam(required = false) String genre) {
-        return bookService.getBooksByAuthorAndGenre(author, genre);
+    public List<Book> getAllBooks(
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "100") Integer limit
+    ) {
+        return bookService.getBooksByAuthorAndGenre(author, genre, page, limit);
     }
 
     @PostMapping

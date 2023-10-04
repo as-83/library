@@ -1,8 +1,6 @@
 package com.homework.library.mapper;
 
-import com.homework.library.entity.Author;
 import com.homework.library.entity.Book;
-import com.homework.library.entity.Genre;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -24,20 +22,12 @@ public interface BookMapper {
                     "left join main.genres as g on b.genre = g.id " +
                     "where 1=1  " +
                     "<if test=\"authorId !=null \"> and b.author=#{authorId}</if> " +
-                    "<if test=\"genreId !=null \"> and b.genre=#{genreId}</if>" +
+                    "<if test=\"genreId !=null \"> and b.genre=#{genreId}</if> " +
+                    "order by b.id limit #{limit} " +
+                    "OFFSET  (#{page}-1)*#{limit} " +
             "</script>"
     )
-    List<Book> getBooksByAuthorAndGenreDynamic(Long authorId, Long genreId);
-
-    @Select(
-            "select b.id, a.name, b.title, g.title " +
-                    "from main.books as b " +
-                    "left join main.authors as a on b.author = a.id " +
-                    "left join main.genres as g on b.genre = g.id " +
-                    "where b.author=#{authorId}"
-    )
-    
-    List<Book> getBooksByAuthorName(Long authorId);
+    List<Book> getBooksByAuthorAndGenreDynamic(Long authorId, Long genreId, Integer page, Integer limit);
 
     @Update(
             "update main.books " +
